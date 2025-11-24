@@ -1,0 +1,8 @@
+# .gitignore
+__pycache__/
+*.pyc
+.venv/
+.env
+# Разрешить сохранять конфигурации запуска:
+!.idea/runConfigurations/
+.idea/*  # Исключить всё остальное
