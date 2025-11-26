@@ -4,6 +4,7 @@
 *.prof
 *.pstats
 snakeviz_*
+profile_output.*
 
 # PyCharm
 __pycache__/
