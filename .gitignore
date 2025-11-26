@@ -1,8 +1,16 @@
 # .gitignore
+
+# Profiling data
+*.prof
+*.pstats
+snakeviz_*
+
+# PyCharm
 __pycache__/
 *.pyc
 .venv/
 .env
-# Разрешить сохранять конфигурации запуска:
+
+# IDE files (игнорируем всё, кроме конфигураций запуска)
+.idea/
 !.idea/runConfigurations/
-.idea/*  # Исключить всё остальное
