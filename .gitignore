@@ -4,7 +4,7 @@
 *.prof
 *.pstats
 snakeviz_*
-profile_output.*
+profiling_notes.txt
 
 # PyCharm
 __pycache__/
