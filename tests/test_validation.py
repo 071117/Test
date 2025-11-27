@@ -1,4 +1,10 @@
 import pytest
+import sys
+from pathlib import Path
+
+# Добавляем корень проекта в sys.path для GitHub Actions
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from main import validate_url_client_side
 
 @pytest.mark.parametrize("url, expected", [
