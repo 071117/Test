@@ -1,11 +1,12 @@
-import pytest
 import sys
 from pathlib import Path
 
 # Добавляем корень проекта в sys.path для GitHub Actions
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))  # noqa: E402
 
-from main import validate_url_client_side
+import pytest  # noqa: E402
+from main import validate_url_client_side  # noqa: E402
+
 
 @pytest.mark.parametrize("url, expected", [
     ("https://ria.ru", True),

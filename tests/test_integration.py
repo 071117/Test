@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, PropertyMock
 from main import extract_headlines
 

@@ -5,6 +5,7 @@
 *.pstats
 snakeviz_*
 profiling_notes.txt
+.coverage
 
 # PyCharm
 __pycache__/

@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 
 ALLOWED_DOMAINS = ["ria.ru", "lenta.ru", "tass.ru"]
 
+
 def validate_url_client_side(url: str) -> bool:
     """Клиентская валидация: проверяет ТОЛЬКО формат URL (без доступа к интернету)"""
     try:
@@ -58,6 +59,7 @@ def validate_page_content(driver) -> bool:
         print(f"Ошибка валидации содержимого: {str(e)}")
         return False
 
+
 def init_driver() -> webdriver.Chrome:
     """Настройка драйвера: headless-режим, подмена user-agent, отключение детекции автоматизации."""
     chrome_options = Options()
@@ -65,7 +67,10 @@ def init_driver() -> webdriver.Chrome:
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    chrome_options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    )
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
 
@@ -115,7 +120,7 @@ def extract_headlines(driver: webdriver.Chrome) -> list[str]:
         print(f"Ошибка: Нет селектора для извлечения заголовков с {current_domain}")
         return []
 
-    headlines = []
+    headlines: list[str] = []
     attempts = 0
     while attempts < 3 and len(headlines) < 5:
         try:
@@ -135,12 +140,12 @@ def extract_headlines(driver: webdriver.Chrome) -> list[str]:
             time.sleep(1)
     return headlines[:5]
 
+
 if __name__ == "__main__":
     while True:  # Основной цикл для всего процесса
         # 1. Запрашиваем URL
         target_url = input("Введите URL для парсинга: ").strip()
         # target_url = "https://ria.ru"
-
 
         # 2. Клиентская валидация формата
         if not validate_url_client_side(target_url):
