@@ -138,8 +138,8 @@ def extract_headlines(driver: webdriver.Chrome) -> list[str]:
 if __name__ == "__main__":
     while True:  # Основной цикл для всего процесса
         # 1. Запрашиваем URL
-        # target_url = input("Введите URL для парсинга: ").strip()
-        target_url = "https://ria.ru"
+        target_url = input("Введите URL для парсинга: ").strip()
+        # target_url = "https://ria.ru"
 
 
         # 2. Клиентская валидация формата
