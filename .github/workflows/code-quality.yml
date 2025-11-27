@@ -5,17 +5,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+
       - name: Install dependencies
         run: |
           pip install -r requirements-ci.txt
+
       - name: Run static analysis
         run: |
           flake8 . --count --show-source --statistics
           mypy . --ignore-missing-imports
-          bandit -r . || true  # Игнорировать ошибки banditon
-      - name: Check dependencies safety
-        run: safety scan --file=requirements-ci.txt --output=json
+          bandit -r . || echo "Bandit reported issues, but workflow continues for educational purposes"
+
+      # Safety: используем официальный GitHub Action вместо CLI,
+      # чтобы избежать интерактивных запросов и ошибок EOF
+      - name: Check for vulnerable dependencies
+        uses: pyupio/safety-action@master
+        with:
+          requirements-files: "requirements-ci.txt"
+          # api-key не обязателен для публичных репозиториев
