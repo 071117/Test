@@ -6,6 +6,8 @@ from selenium.common.exceptions import (
     NoSuchElementException
 )
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
 import re
@@ -74,15 +76,26 @@ def init_driver() -> webdriver.Chrome:
     """)
     return driver
 
-def scroll_to_load(driver: webdriver.Chrome) -> None:
-    """Эмуляция человеческой прокрутки для подгрузки контента"""
-    scroll_pause = 0.8
-    screen_height = driver.execute_script("return window.innerHeight")
 
-    for _ in range(3):  # 3 этапа прокрутки
-        driver.execute_script(f"window.scrollBy(0, {screen_height});")
-        time.sleep(scroll_pause + random.uniform(0.2, 0.5))
-        scroll_pause += 0.3  # Увеличиваем паузу для естественности
+def scroll_to_load(driver: webdriver.Chrome) -> None:
+    """Адаптивная прокрутка до полной загрузки контента (для RIA.ru)"""
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    max_attempts = 3  # Защита от бесконечного цикла
+
+    for attempt in range(max_attempts):
+        # Прокручиваем до конца страницы
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Случайная пауза для имитации человеческого поведения
+        time.sleep(random.uniform(0.5, 1.0))
+
+        # Проверяем, изменилась ли высота страницы (подгрузился ли новый контент)
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            # Если высота не изменилась - контент больше не подгружается
+            break
+
+        last_height = new_height
 
 
 def extract_headlines(driver: webdriver.Chrome) -> list[str]:
@@ -125,7 +138,9 @@ def extract_headlines(driver: webdriver.Chrome) -> list[str]:
 if __name__ == "__main__":
     while True:  # Основной цикл для всего процесса
         # 1. Запрашиваем URL
-        target_url = input("Введите URL для парсинга: ").strip()
+        # target_url = input("Введите URL для парсинга: ").strip()
+        target_url = "https://ria.ru"
+
 
         # 2. Клиентская валидация формата
         if not validate_url_client_side(target_url):
@@ -147,7 +162,11 @@ if __name__ == "__main__":
             driver.set_page_load_timeout(15)
             try:
                 driver.get(target_url)
-                time.sleep(2)
+                # Заменяем статическое ожидание на динамическое
+                # Ждем появления хотя бы одного заголовка новостей
+                WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, ".cell-list__item-title"))
+                )
             except TimeoutException:
                 print(f"Ошибка: Превышено время ожидания загрузки страницы {target_url}")
                 driver.quit()
@@ -161,7 +180,7 @@ if __name__ == "__main__":
 
             # 6. Успешная валидация - извлекаем данные
             scroll_to_load(driver)
-            time.sleep(2)
+
             headlines = extract_headlines(driver)
 
             print("\nПолученные заголовки:")
