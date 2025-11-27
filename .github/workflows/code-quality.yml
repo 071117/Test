@@ -21,10 +21,7 @@ jobs:
           mypy . --ignore-missing-imports
           bandit -r . || echo "Bandit reported issues, but workflow continues for educational purposes"
 
-      # Safety: используем официальный GitHub Action вместо CLI,
-      # чтобы избежать интерактивных запросов и ошибок EOF
       - name: Check for vulnerable dependencies
-        uses: pyupio/safety-action@master
+        uses: pyupio/safety-action@v2
         with:
           requirements-files: "requirements-ci.txt"
-          # api-key не обязателен для публичных репозиториев
