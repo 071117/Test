@@ -18,4 +18,4 @@ jobs:
           mypy . --ignore-missing-imports
           bandit -r .
       - name: Check dependencies safety
-        run: safety check -r requirements-ci.txt
+        run: safety scan --file=requirements-ci.txt
